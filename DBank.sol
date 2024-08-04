@@ -11,7 +11,7 @@ contract DecentralizedBank {
     struct Investment {
         uint amount;
         uint timestamp;
-        uint duration;
+        uint duration; // Duration in months
         bool withdrawn;
     }
 
@@ -24,7 +24,7 @@ contract DecentralizedBank {
 
     modifier validDuration(uint _duration) {
         require(
-            _duration == 1 months || _duration == 6 months || _duration == 1 years,
+            _duration == 1 || _duration == 6 || _duration == 12,
             "Invalid investment duration"
         );
         _;
@@ -46,7 +46,7 @@ contract DecentralizedBank {
             Investment({
                 amount: msg.value,
                 timestamp: block.timestamp,
-                duration: _duration,
+                duration: _duration * 30 days, // Convert months to days
                 withdrawn: false
             })
         );
@@ -62,11 +62,11 @@ contract DecentralizedBank {
         require(block.timestamp >= investment.timestamp + investment.duration, "Investment period not yet ended");
 
         uint rate;
-        if (investment.duration == 1 months) {
+        if (investment.duration == 30 days) { // 1 month
             rate = oneMonthRate;
-        } else if (investment.duration == 6 months) {
+        } else if (investment.duration == 180 days) { // 6 months
             rate = sixMonthsRate;
-        } else if (investment.duration == 1 years) {
+        } else if (investment.duration == 360 days) { // 12 months
             rate = oneYearRate;
         }
 
