@@ -9,6 +9,11 @@ contract DecentralizedBank {
     uint public sixMonthsRate = 9;
     uint public oneYearRate = 18;
 
+    uint constant ONE_MINUTE = 1 minutes;
+    uint constant ONE_MONTH = 30 days;
+    uint constant SIX_MONTHS = 180 days;
+    uint constant ONE_YEAR = 360 days;
+
     struct Investment {
         uint amount;
         uint timestamp;
@@ -25,7 +30,7 @@ contract DecentralizedBank {
 
     modifier validDuration(uint _duration) {
         require(
-            _duration == 1 minutes || _duration == 30 days || _duration == 180 days || _duration == 360 days,
+            _duration == ONE_MINUTE || _duration == ONE_MONTH || _duration == SIX_MONTHS || _duration == ONE_YEAR,
             "Invalid investment duration"
         );
         _;
@@ -63,13 +68,13 @@ contract DecentralizedBank {
         require(block.timestamp >= investment.timestamp + investment.duration, "Investment period not yet ended");
 
         uint rate;
-        if (investment.duration == 1 minutes) { // 1 minute
+        if (investment.duration == ONE_MINUTE) { // 1 minute
             rate = oneMinuteRate;
-        } else if (investment.duration == 30 days) { // 1 month
+        } else if (investment.duration == ONE_MONTH) { // 1 month
             rate = oneMonthRate;
-        } else if (investment.duration == 180 days) { // 6 months
+        } else if (investment.duration == SIX_MONTHS) { // 6 months
             rate = sixMonthsRate;
-        } else if (investment.duration == 360 days) { // 12 months
+        } else if (investment.duration == ONE_YEAR) { // 12 months
             rate = oneYearRate;
         }
 
