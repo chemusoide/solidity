@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 contract DecentralizedBank {
     address public owner;
     uint public totalFunds;
+    uint public oneMinuteRate = 1;
     uint public oneMonthRate = 3;
     uint public sixMonthsRate = 9;
     uint public oneYearRate = 18;
@@ -11,7 +12,7 @@ contract DecentralizedBank {
     struct Investment {
         uint amount;
         uint timestamp;
-        uint duration; // Duration in months
+        uint duration; // Duration in seconds
         bool withdrawn;
     }
 
@@ -24,7 +25,7 @@ contract DecentralizedBank {
 
     modifier validDuration(uint _duration) {
         require(
-            _duration == 1 || _duration == 6 || _duration == 12,
+            _duration == 1 minutes || _duration == 30 days || _duration == 180 days || _duration == 360 days,
             "Invalid investment duration"
         );
         _;
@@ -46,7 +47,7 @@ contract DecentralizedBank {
             Investment({
                 amount: msg.value,
                 timestamp: block.timestamp,
-                duration: _duration * 30 days, // Convert months to days
+                duration: _duration, // Duration in seconds
                 withdrawn: false
             })
         );
@@ -62,7 +63,9 @@ contract DecentralizedBank {
         require(block.timestamp >= investment.timestamp + investment.duration, "Investment period not yet ended");
 
         uint rate;
-        if (investment.duration == 30 days) { // 1 month
+        if (investment.duration == 1 minutes) { // 1 minute
+            rate = oneMinuteRate;
+        } else if (investment.duration == 30 days) { // 1 month
             rate = oneMonthRate;
         } else if (investment.duration == 180 days) { // 6 months
             rate = sixMonthsRate;
