@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity >=0.8.0 <0.9.0;
+
+/*
+For testing purposes we have made an investment rate of one minute and the duration will be in seconds,
+but it could be done in hours or another unit of time.
+*/
 
 contract DecentralizedBank {
     address public owner;
@@ -40,7 +45,7 @@ contract DecentralizedBank {
     event Withdraw(address indexed investor, uint amount);
 
     constructor() payable {
-        require(msg.value == 10 ether, "Initial funds must be 10 ETH");
+        require(msg.value >= 10 ether, "Initial funds must be at least 10 ETH");
         owner = msg.sender;
         totalFunds = msg.value;
     }
